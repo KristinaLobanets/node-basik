@@ -7,7 +7,7 @@ const { promises: fsPromise } = fs;
 
 async function listContacts() {
   try {
-    fs.readFile(contactsPath, "utf-8", (error, data) => {
+    fs.readFile(contactsPath, "utf-8", (data) => {
       console.table(JSON.parse(data));
     });
   } catch (err) {
