@@ -7,9 +7,9 @@ const { promises: fsPromise } = fs;
 
 async function listContacts() {
   try {
-    fs.readFile(contactsPath, "utf-8", (data) => {
-      console.table(JSON.parse(data));
-    });
+    const res = await fsPromise.readFile(contactsPath, "utf-8");
+    console.table(JSON.parse(res));
+    return JSON.parse(res);
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -19,7 +19,8 @@ async function listContacts() {
 async function getContactById(contactId) {
   try {
     const contactsList = await listContacts();
-    return contactsList.find((contact) => contact.id === contactId);
+    const findId = contactsList.find((contact) => contact.id === contactId);
+    console.table(findId);
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -33,6 +34,7 @@ async function removeContact(contactId) {
       (contact) => contact.id !== contactId
     );
     await fsPromise.writeFile(contactsPath, JSON.stringify(filteredList));
+    await listContacts();
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -42,7 +44,7 @@ async function removeContact(contactId) {
 async function addContact(name, email, phone) {
   try {
     const contactsList = await listContacts();
-    const idArray = listContacts.map((item) => item.id);
+    const idArray = contactsList.map((item) => item.id);
     const maxId = Math.max(...idArray);
     const id = maxId + 1;
     const newContact = { id, name, email, phone };
@@ -50,7 +52,7 @@ async function addContact(name, email, phone) {
       contactsPath,
       JSON.stringify([...contactsList, newContact])
     );
-    console.log(newContact);
+    await listContacts();
   } catch (err) {
     console.log(err);
     process.exit(1);
