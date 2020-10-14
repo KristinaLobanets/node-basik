@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const UserRouter = require("./user/userRouter");
 
 require("dotenv").config();
 
@@ -29,7 +30,7 @@ module.exports = class UserServer {
   }
 
   initRoutes() {
-    this.server.use("/api/", userRouter);
+    this.server.use("/api", UserRouter);
   }
 
   startListening() {
